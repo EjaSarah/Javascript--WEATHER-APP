@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wheather App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- https://api.openweathermap.org/data/2.5/weather?id={berlin}&appid={b8386c0b6bc5df34b490c90115b2b2af} -->
+    <div class="card">
+      <div class="search">
+        <input type="text" placeholder="enter city name" spellcheck="false" />
+        <button>
+          <ion-icon name="search-outline"></ion-icon>
+        </button>
+      </div>
+      <div class="error">
+        <p>Invalid city Name</p>
+      </div>
+      <div class="weather">
+        <img
+          src="images/weather.png"
+          alt="weather icon"
+          class="weather-ion-icon"
+        />
+        <h1 class="temp">22°c</h1>
+        <h2 class="city">Brazil</h2>
+        <div class="details">
+          <div class="col">
+            <img src="images/drizzle.png" alt="sunny" class="col-ion-icon1" />
+            <!-- <ion-icon name="water-outline" ></ion-icon> -->
+            <div>
+              <p class="humidity">50%</p>
+              <p>Humidity</p>
+            </div>
+          </div>
+          <div class="col">
+            <img src="images/rainy.png" alt="sunny" class="col-ion-icon2" />
+            <!-- <ion-icon name="water-outline" ></ion-icon> -->
+            <div>
+              <p class="wind">15 km/h</p>
+              <p>Wind Speed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    http://api.openweathermap.org/data/2.5/forecast?id=524901&appid={API key}
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+
+    <script>
+      const apiKey = "b8386c0b6bc5df34b490c90115b2b2af";
+      const apiUrl =
+        " https://api.openweathermap.org/data/2.5/weather?units=metri&q=";
+
+      const searchBox = document.querySelector(".search input");
+      const searchBtn = document.querySelector(".search button");
+      const weatherIon = document.querySelector(".weather-ion-icon");
+
+      async function checkWeather(city) {
+        const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+        if (response.status == 404) {
+          document.querySelector(".error").style.display = "block";
+          document.querySelector(".weather").style.display = "none";
+        } else {
+          var data = await response.json();
+        }
+
+        document.querySelector(".city").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML =
+          Math.round(data.main.temp) + "°c";
+        document.querySelector(".humidity").innerHTML =
+          data.main.humidity + "%";
+        document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+        if (data.weather[0].main == "Clouds") {
+          weatherIon.src = "images/weather.png";
+        } else if (data.weather[0].main == "Clear") {
+          weatherIon.src = "images/sunny.png";
+        } else if (data.weather[0].main == "Rain") {
+          weatherIon.src = "images/rainy.png";
+        } else if (data.weather[0].main == "Drizzle") {
+          weatherIon.src = "images/drizzle.png";
+        } else if (data.weather[0].main == "Mist") {
+          weatherIon.src = "images/weather.png";
+        }
+
+        document.querySelector(".weather").style.display = "block";
+        document.querySelector(".error").style.display = "none";
+      }
+
+      searchBtn.addEventListener("click", () => {
+        checkWeather(searchBox.value);
+      });
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
